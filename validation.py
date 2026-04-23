@@ -4,6 +4,7 @@ from collections.abc import Sequence
 
 
 ### ERRORS ###
+### ### TYPE ERRORS ###
 class InvalidSequenceError(TypeError):
     """Exception raised when an argument is not a valid sequence.
 
@@ -32,12 +33,17 @@ class InvalidTypeError(TypeError):
     def __init__(self, data, expected_type):
         super().__init__(f'expected {data} of {type(data)} to be an instance of {expected_type}')
 
-# @TODO test
+### ### VALUE ERRORS ###
 class ProhibitedValueError(ValueError):
     def __init__(self, value, invalid_value_tuple):
         super().__init__(f'expected {value} not to be one of these {invalid_value_tuple}')
 
+class DuplicateValueError(ValueError):
+    def __init__(self, value):
+        super().__init__(f'{value} is already represented')
+
 ### VALIDATION RAISES ###
+# @TODO refactor for more consistency instead of returning true, check the individual case. This will break the class on change. Be mindful.
 def sequence_are_numbers(data_list: Sequence):
     """ Checks that all elements in data_list are numeric (int or float), or that data_list is None.
 
@@ -71,8 +77,11 @@ def validate_against(subject, invalid_value_tuple):
     for x in invalid_value_tuple:
         if subject == x: raise ProhibitedValueError(subject, invalid_value_tuple)
 
-# @TODO test
 def validate_float(value):
     if Math.isinf(value) or Math.isnan(value): raise ProhibitedValueError(value, (Math.inf, Math.nan))
+
+def validate_uniqueness(sequence: Sequence, value):
+    if any(x == value for x in sequence): raise DuplicateValueError(value)
+
 
 
