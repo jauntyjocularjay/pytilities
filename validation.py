@@ -1,5 +1,5 @@
 import math as Math
-from collections.abc import Sequence
+from collections.abc import Sequence, Iterable
 
 
 
@@ -80,8 +80,8 @@ def validate_against(subject, invalid_value_tuple):
 def validate_float(value):
     if Math.isinf(value) or Math.isnan(value): raise ProhibitedValueError(value, (Math.inf, Math.nan))
 
-def validate_uniqueness(sequence: Sequence, value):
-    if any(x == value for x in sequence): raise DuplicateValueError(value)
+def validate_uniqueness(sequence: Iterable, value):
+    if value in sequence: raise DuplicateValueError(value)
 
 
 
