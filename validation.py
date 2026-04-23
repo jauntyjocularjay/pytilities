@@ -2,6 +2,42 @@ import math as Math
 from collections.abc import Sequence
 
 
+
+### ERRORS ###
+class InvalidSequenceError(TypeError):
+    """Exception raised when an argument is not a valid sequence.
+
+    Raised by statistical functions when the input is not a sequence type (e.g., list, tuple, set).
+
+    Example:
+        if not isinstance(data_list, Sequence):
+            raise InvalidSequenceError
+    """
+    def __init__(self, message=f"expected a {Sequence}"):
+        super().__init__(message)
+
+class NotNumericSequenceError(TypeError):
+    """Exception raised when a sequence contains non-numeric elements.
+
+    Raised by statistical functions when the input sequence contains elements that are not real numbers.
+
+    Example:
+        if not sequence_are_numbers(data_list):
+            raise NotNumericSequenceError
+    """
+    def __init__(self, message=f"expected a {Sequence} of {(int, float)} excluding {(Math.inf, Math.nan)}"):
+        super().__init__(message)
+
+class InvalidTypeError(TypeError):
+    def __init__(self, data, expected_type):
+        super().__init__(f'expected {data} of {type(data)} to be an instance of {expected_type}')
+
+# @TODO test
+class ProhibitedValueError(ValueError):
+    def __init__(self, value, invalid_value_tuple):
+        super().__init__(f'expected {value} not to be one of these {invalid_value_tuple}')
+
+### VALIDATION RAISES ###
 def sequence_are_numbers(data_list: Sequence):
     """ Checks that all elements in data_list are numeric (int or float), or that data_list is None.
 
@@ -31,31 +67,12 @@ def sequence_are_numbers(data_list: Sequence):
 def validate_as(arg, type):
     if not isinstance(arg, type): raise InvalidTypeError(arg, type)
 
-# Errors
-class InvalidSequenceError(TypeError):
-    """Exception raised when an argument is not a valid sequence.
+def validate_against(subject, invalid_value_tuple):
+    for x in invalid_value_tuple:
+        if subject == x: raise ProhibitedValueError(subject, invalid_value_tuple)
 
-    Raised by statistical functions when the input is not a sequence type (e.g., list, tuple, set).
+# @TODO test
+def validate_float(value):
+    if Math.isinf(value) or Math.isnan(value): raise ProhibitedValueError(value, (Math.inf, Math.nan))
 
-    Example:
-        if not isinstance(data_list, Sequence):
-            raise InvalidSequenceError
-    """
-    def __init__(self, message=f"expected a {Sequence}"):
-        super().__init__(message)
 
-class NotNumericSequenceError(TypeError):
-    """Exception raised when a sequence contains non-numeric elements.
-
-    Raised by statistical functions when the input sequence contains elements that are not real numbers.
-
-    Example:
-        if not sequence_are_numbers(data_list):
-            raise NotNumericSequenceError
-    """
-    def __init__(self, message=f"expected a {Sequence} real numbers"):
-        super().__init__(message)
-
-class InvalidTypeError(TypeError):
-    def __init__(self, data, type):
-        super().__init__(f'expected {data} to be a {type}')
