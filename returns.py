@@ -1,11 +1,11 @@
 from collections import deque, UserList
 from collections.abc import Sequence
 from array import array as Array
-from .validation import sequence_are_numbers, InvalidSequenceError, NotNumericSequenceError
+from pytilities.validation import sequence_are_numbers, InvalidSequenceError, NotNumericSequenceError
 
 
 
-def original_sequence_type(input_type: type, data_list: Sequence):
+def original_sequence_type(input_type: type, data_list: Sequence = []):
     ''' Return a sequence of the same type as input_type, populated with data_list's elements.
 
     Converts the provided data_list into a set, tuple, or list, matching the type of input_type.
@@ -25,8 +25,7 @@ def original_sequence_type(input_type: type, data_list: Sequence):
     '''
     if not isinstance(data_list, Sequence):
         raise TypeError(f'{input_type} must be a sequence.')
-    
-    if input_type is str:
+    elif input_type is str:
         return str(data_list)
     elif input_type is list:
         return list(data_list)
@@ -38,15 +37,18 @@ def original_sequence_type(input_type: type, data_list: Sequence):
         return bytes(data_list)
     elif input_type is bytearray:
         return bytearray(data_list)
-    elif input_type is range:
-        data_list = sorted(data_list)
-        if len(data_list) == 0: return range(0)
-        if sequence_are_numbers(data_list): return range(data_list[0], data_list[-1])
     elif input_type is deque:
         return deque(data_list)
     elif input_type is Array:
         return Array('i', (x for x in data_list))
     elif input_type is UserList:
         return UserList(data_list)
-
+    elif sequence_are_numbers(data_list):
+        if len(data_list) == 0:
+            return data_list
+        else:
+            return range(data_list[0], data_list[-1])
+    else:
+        raise NotImplementedError(f'original_sequence_type does not support {input_type}')
+        
 

@@ -42,7 +42,8 @@ class DuplicateValueError(ValueError):
     def __init__(self, value):
         super().__init__(f'{value} is already represented')
 
-### VALIDATION RAISES ###
+
+### Raisers ###
 # @TODO refactor for more consistency instead of returning true, check the individual case. This will break the class on change. Be mindful.
 def sequence_are_numbers(data_list: Sequence):
     """ Checks that all elements in data_list are numeric (int or float), or that data_list is None.
@@ -70,6 +71,8 @@ def sequence_are_numbers(data_list: Sequence):
 
     return True
 
+
+### ### VALIDATORS ###
 def validate_as(arg, type):
     if not isinstance(arg, type): raise InvalidTypeError(arg, type)
 
@@ -80,8 +83,8 @@ def validate_against(subject, invalid_value_tuple):
 def validate_float(value):
     if Math.isinf(value) or Math.isnan(value): raise ProhibitedValueError(value, (Math.inf, Math.nan))
 
-def validate_uniqueness(sequence: Iterable, value):
-    if value in sequence: raise DuplicateValueError(value)
+def validate_uniqueness(iterable: Iterable, value):
+    if value in iterable: raise DuplicateValueError(value)
 
 
 

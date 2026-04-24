@@ -5,7 +5,7 @@ Ensures correct error handling, type validation, and numeric sequence checks for
 
 import pytest
 import math
-from .validation import *
+from pytilities.validation import *
 
 def test_invalid_sequence_error_message():
 	err = InvalidSequenceError()
