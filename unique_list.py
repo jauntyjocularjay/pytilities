@@ -52,6 +52,7 @@ class unique_list(list):
         if value in self.lookup_set:
             return
         else:
+            self.lookup_set.remove(self[index])
             self.insert(index,value)
             self.lookup_set.add(value)
 
@@ -67,14 +68,15 @@ class unique_list(list):
         self.lookup_set.add(x)
 
     # TODO Test and finish
-    def set_slice(self, slic: slice, value_iterable: Iterable[Any]):
+    def set_slice(self, segment: slice, value_iterable: Iterable[Any]):
         value_list = list(value_iterable)
 
         for x in value_list:
             if x in self.lookup_set:
                 value_list.remove(x)
+                segment = slice(segment.start, segment.stop-1, segment.step)
+        
+        super().__setitem__(segment, value_list)
 
-        slic = slice(slic.start, slic.stop-1, slic.step)
-        super().__setitem__(slic, value_list)
-        pass
+        self.lookup_set = set(self)
 

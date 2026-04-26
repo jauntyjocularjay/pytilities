@@ -12,11 +12,13 @@ def test_setitem_single_value():
     assert 1 not in ls.lookup_set, 'lookup_set should not include the replaced value'
 
 
-def test_setitem_duplicate_raises():
-    '''Test: __setitem__ raises DuplicateValueError for duplicate value.'''
+def test_setitem_moves_value_to_index():
+    '''Test: __setitem__ moves duplicate value to new index.'''
     ls = unique_list(1, 2, 3)
-    with pytest.raises(DuplicateValueError):
-        ls[0] = 2  # 2 already exists
+    ls[0] = 2  # 2 already exists, should move 2 to index 0
+    assert ls[0] == 2, f'Duplicate value should be moved to the new index. Result: {ls}'
+    assert ls.count(2) == 1, 'List should not contain duplicates'
+    assert sorted(ls) == [2, 3], 'List should contain only unique values after move'
 
 
 def test_setitem_slice_unique():
@@ -29,7 +31,9 @@ def test_setitem_slice_unique():
 
 
 def test_setitem_slice_duplicate_raises():
-    '''Test: __setitem__ with slice raises DuplicateValueError for duplicate.'''
+    '''Test: __setitem__ with slice moves duplicate values to new indices.'''
     ls = unique_list(1, 2, 3, 4)
-    with pytest.raises(DuplicateValueError):
-        ls[1:3] = [2, 5]  # 2 already exists
+    ls[1:3] = [2, 5]  # 2 already exists, should move 2 to index 1
+    assert ls[1] == 2 and ls[2] == 5, 'Duplicate value should be moved to the new index in slice'
+    assert ls.count(2) == 1, 'List should not contain duplicates after slice assignment'
+    assert sorted(ls) == [1, 2, 4, 5], 'List should contain only unique values after slice move'
