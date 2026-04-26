@@ -50,7 +50,8 @@ class unique_list(list):
     # TODO Test and finish
     def set_single(self, index: int, value: Any):
         if value in self.lookup_set:
-            return
+            self.remove(value)
+            super().insert(index, value)
         else:
             self.lookup_set.remove(self[index])
             self.insert(index,value)

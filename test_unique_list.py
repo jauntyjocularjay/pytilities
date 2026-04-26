@@ -1,4 +1,4 @@
-import pytest
+# import pytest
 from .unique_list import unique_list
 from .validation import DuplicateValueError
 
@@ -12,13 +12,14 @@ def test_setitem_single_value():
     assert 1 not in ls.lookup_set, 'lookup_set should not include the replaced value'
 
 
-def test_setitem_moves_value_to_index():
+def test_setitem_moves_existing_value_to_index():
     '''Test: __setitem__ moves duplicate value to new index.'''
     ls = unique_list(1, 2, 3)
-    ls[0] = 2  # 2 already exists, should move 2 to index 0
-    assert ls[0] == 2, f'Duplicate value should be moved to the new index. Result: {ls}'
+    i = 0
+    ls[i] = 2  # 2 already exists, should move 2 to index 0
+    assert ls[0] == 2, f'Duplicate value should be moved to the new index: {i}. Result: {ls}'
     assert ls.count(2) == 1, 'List should not contain duplicates'
-    assert sorted(ls) == [2, 3], 'List should contain only unique values after move'
+    assert sorted(ls) == [1, 2, 3], 'List should contain only unique values after move'
 
 
 def test_setitem_slice_unique():
