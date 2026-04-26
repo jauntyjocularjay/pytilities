@@ -22,7 +22,7 @@ def test_invalid_type_error_message():
 
 def test_prohibited_value_error_message():
 	err = ProhibitedValueError(42, (1, 2, 42))
-	assert 'expected 42 not to be one of these (1, 2, 42)' in str(err)
+	assert 'expected 42 not to be any of (1, 2, 42)' in str(err)
 
 @pytest.mark.parametrize("data,expected", [
 	([1, 2, 3], True),

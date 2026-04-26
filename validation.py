@@ -36,7 +36,7 @@ class InvalidTypeError(TypeError):
 ### ### VALUE ERRORS ###
 class ProhibitedValueError(ValueError):
     def __init__(self, value, invalid_value_tuple):
-        super().__init__(f'expected {value} not to be one of these {invalid_value_tuple}')
+        super().__init__(f'expected {value} not to be any of {invalid_value_tuple}')
 
 class DuplicateValueError(ValueError):
     def __init__(self, value):
