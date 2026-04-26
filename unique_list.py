@@ -1,5 +1,5 @@
 
-from validation import *
+from .validation import *
 from collections.abc import Iterable
 from typing import Union, Any
 

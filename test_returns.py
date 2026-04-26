@@ -7,8 +7,8 @@ the original_sequence_type utility, ensuring correct type preservation and conve
 """
 
 import pytest
-from .returns import original_sequence_type
-from .validation import InvalidSequenceError, NotNumericSequenceError
+from .returns import *
+from .validation import *
 from collections import deque, UserList
 from array import array as Array
 

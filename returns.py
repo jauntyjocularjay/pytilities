@@ -1,7 +1,7 @@
 from collections import deque, UserList
 from collections.abc import Sequence
 from array import array as Array
-from pytilities.validation import sequence_are_numbers, InvalidSequenceError, NotNumericSequenceError
+from .validation import *
 
 
 

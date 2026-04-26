@@ -1,6 +1,6 @@
 import pytest
-from unique_list import unique_list
-from validation import DuplicateValueError
+from .unique_list import unique_list
+from .validation import DuplicateValueError
 
 # --- __setitem__ tests ---
 def test_setitem_single_value():
