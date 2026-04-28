@@ -6,11 +6,13 @@ from typing import Union, Any
 
 
 class unique_list(list):
-    ''' 
+    '''
+    unique_list is an unfinished class meant to enforce uniqueness with the methods available to a list.
     '''
     lookup_set: set
 
     def __init__(self, *arg):
+
         arg_set = set(arg)
         arg_list = list(arg_set)
 
@@ -70,14 +72,12 @@ class unique_list(list):
 
     # TODO Test and finish
     def set_slice(self, segment: slice, value_iterable: Iterable[Any]):
-        value_list = list(value_iterable)
+        part1 = self[:segment.start]
+        part2 = self[segment.stop:]
 
-        for x in value_list:
-            if x in self.lookup_set:
-                value_list.remove(x)
-                segment = slice(segment.start, segment.stop-1, segment.step)
+        for x in value_iterable:
+            if x in part1: part1.remove(x)
+            if x in part2: part2.remove(x)
         
-        super().__setitem__(segment, value_list)
-
+        super().__setitem__(slice(None), part1 + list(value_iterable) + part2)
         self.lookup_set = set(self)
-
