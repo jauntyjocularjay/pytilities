@@ -42,8 +42,15 @@ class DuplicateValueError(ValueError):
     def __init__(self, value):
         super().__init__(f'{value} is already represented')
 
+class ValueAboveBoundsError(ValueError):
+    def __init__(self, subject, target):
+        super().__init__(f'{subject} is prohibited to be greater than {target}')
 
-### Raisers ###
+class ValueBelowBoundsError(ValueError):
+    def __init__(self, subject, target):
+        super().__init__(f'{subject} is prohibited to be less than {target}')
+
+### VALIDATION RAISES ###
 # @TODO refactor for more consistency instead of returning true, check the individual case. This will break the class on change. Be mindful.
 def sequence_are_numbers(data_list: Sequence):
     """ Checks that all elements in data_list are numeric (int or float), or that data_list is None.
@@ -86,5 +93,9 @@ def validate_float(value):
 def validate_uniqueness(iterable: Iterable, value):
     if value in iterable: raise DuplicateValueError(value)
 
+def validate_is_greater_than(value, target):
+    if value > target: raise ValueAboveBoundsError(value, target)
 
+def validate_is_less_than(value, target):
+    if value < target: raise ValueBelowBoundsError(value, target)
 

@@ -102,7 +102,7 @@ def test_range_single_element():
     assert result is None or isinstance(result, range), 'Should return a range or None for single numeric input'
 
 def test_fallthrough_branch():
-    '''Test: returns None if input_type is not handled.'''
+    '''Test: returns data as a list if input_type is not handled.'''
     class Dummy: pass
-    with pytest.raises(NotImplementedError):
-        original_sequence_type(Dummy, ['a', 'b', 'c'])
+    result = original_sequence_type(Dummy, [1, 2, 3])
+    assert isinstance(result, list), 'Should return None for unhandled input_type'

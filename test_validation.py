@@ -82,3 +82,54 @@ def test_validate_float_raises(value):
 @pytest.mark.parametrize("value", [0.0, 1.23, -5.6])
 def test_validate_float_no_raise(value):
 	validate_float(value)
+
+# --- New tests for ValueAboveBoundsError, ValueBelowBoundsError, validate_is_greater_than, validate_is_less_than ---
+def test_value_above_bounds_error_message():
+	# Test that the error message is descriptive
+	err = ValueAboveBoundsError(10, 5)
+	assert '10 is prohibited to be greater than 5' in str(err), 'ValueAboveBoundsError should describe the subject and target'
+
+def test_value_below_bounds_error_message():
+	# Test that the error message is descriptive
+	err = ValueBelowBoundsError(2, 7)
+	assert '2 is prohibited to be less than 7' in str(err), 'ValueBelowBoundsError should describe the subject and target'
+
+import pytest
+
+@pytest.mark.parametrize('value,target', [
+	(10, 5),
+	(0, -1),
+	(100, 99),
+])
+def test_validate_is_greater_than_raises(value, target):
+	# Should raise ValueAboveBoundsError when value > target
+	with pytest.raises(ValueAboveBoundsError, match=f'{value} is prohibited to be greater than {target}'):
+		validate_is_greater_than(value, target)
+
+@pytest.mark.parametrize('value,target', [
+	(5, 10),
+	(-1, 0),
+	(99, 100),
+])
+def test_validate_is_greater_than_no_raise(value, target):
+	# Should not raise when value <= target
+	validate_is_greater_than(value, target)
+
+@pytest.mark.parametrize('value,target', [
+	(2, 7),
+	(-5, 0),
+	(0, 1),
+])
+def test_validate_is_less_than_raises(value, target):
+	# Should raise ValueBelowBoundsError when value < target
+	with pytest.raises(ValueBelowBoundsError, match=f'{value} is prohibited to be less than {target}'):
+		validate_is_less_than(value, target)
+
+@pytest.mark.parametrize('value,target', [
+	(7, 2),
+	(0, -5),
+	(1, 0),
+])
+def test_validate_is_less_than_no_raise(value, target):
+	# Should not raise when value >= target
+	validate_is_less_than(value, target)

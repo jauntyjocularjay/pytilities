@@ -27,8 +27,6 @@ def original_sequence_type(input_type: type, data_list: Sequence = []):
         raise TypeError(f'{input_type} must be a sequence.')
     elif input_type is str:
         return str(data_list)
-    elif input_type is list:
-        return list(data_list)
     elif input_type is tuple:
         return tuple(data_list)
     elif input_type is set:
@@ -43,12 +41,6 @@ def original_sequence_type(input_type: type, data_list: Sequence = []):
         return Array('i', (x for x in data_list))
     elif input_type is UserList:
         return UserList(data_list)
-    elif sequence_are_numbers(data_list):
-        if len(data_list) == 0:
-            return data_list
-        else:
-            return range(data_list[0], data_list[-1])
     else:
-        raise NotImplementedError(f'original_sequence_type does not support {input_type}')
-        
+        return list(data_list)
 
