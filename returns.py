@@ -10,6 +10,9 @@ def original_sequence_type(input_type: type, data_list: Sequence = []):
 
     Converts the provided data_list into a set, tuple, or list, matching the type of input_type.
     If input_type is set, returns a set, if tuple, returns a tuple, otherwise, returns a list.
+    
+    Ranges are not supported due to the complexity of reliable reconstruction from arbitrary 
+    sequences. If range support is required, users should handle this case explicitly.
 
     Parameters:
         input_type: The type to match (set, tuple, or list).
@@ -41,6 +44,8 @@ def original_sequence_type(input_type: type, data_list: Sequence = []):
         return Array('i', (x for x in data_list))
     elif input_type is UserList:
         return UserList(data_list)
+    elif input_type is range:
+        raise NotImplementedError(f'range is not supported as range needs to be handled explicitly.')
     else:
         return list(data_list)
 

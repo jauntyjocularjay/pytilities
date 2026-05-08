@@ -9,20 +9,20 @@ from .validation import *
 
 def test_invalid_sequence_error_message():
 	err = InvalidSequenceError()
-	assert 'expected a' in str(err)
+	assert 'expected a' in str(err), f"Expected message to contain 'expected a', Actual: {str(err)}"
 
 def test_not_numeric_sequence_error_message():
 	err = NotNumericSequenceError()
-	assert 'expected a' in str(err)
+	assert 'expected a' in str(err), f"Expected message to contain 'expected a', Actual: {str(err)}"
 
 def test_invalid_type_error_message():
 	err = InvalidTypeError(5, str)
-	assert 'expected 5 of <class' in str(err)
-	assert 'str' in str(err)
+	assert 'expected 5 of <class' in str(err), f"Expected message to contain 'expected 5 of <class', Actual: {str(err)}"
+	assert 'str' in str(err), f"Expected message to contain 'str', Actual: {str(err)}"
 
 def test_prohibited_value_error_message():
 	err = ProhibitedValueError(42, (1, 2, 42))
-	assert 'expected 42 not to be any of (1, 2, 42)' in str(err)
+	assert 'expected 42 not to be any of (1, 2, 42)' in str(err), f"Expected message to contain 'expected 42 not to be any of (1, 2, 42)', Actual: {str(err)}"
 
 @pytest.mark.parametrize("data,expected", [
 	([1, 2, 3], True),
@@ -36,9 +36,9 @@ def test_prohibited_value_error_message():
 ])
 def test_sequence_are_numbers(data, expected):
 	if expected:
-		assert sequence_are_numbers(data)
+		assert sequence_are_numbers(data), f'Expected True for sequence_are_numbers({data}), Actual: {sequence_are_numbers(data)}'
 	else:
-		assert not sequence_are_numbers(data)
+		assert not sequence_are_numbers(data), f'Expected False for sequence_are_numbers({data}), Actual: {sequence_are_numbers(data)}'
 
 @pytest.mark.parametrize("bad_input", [123, 'abc', None])
 def test_sequence_are_numbers_invalid_type(bad_input):
@@ -87,12 +87,12 @@ def test_validate_float_no_raise(value):
 def test_value_above_bounds_error_message():
 	# Test that the error message is descriptive
 	err = ValueAboveBoundsError(10, 5)
-	assert '10 is prohibited to be greater than 5' in str(err), 'ValueAboveBoundsError should describe the subject and target'
+	assert '10 is prohibited to be greater than 5' in str(err), f"ValueAboveBoundsError should describe the subject and target. Actual: {str(err)}"
 
 def test_value_below_bounds_error_message():
 	# Test that the error message is descriptive
 	err = ValueBelowBoundsError(2, 7)
-	assert '2 is prohibited to be less than 7' in str(err), 'ValueBelowBoundsError should describe the subject and target'
+	assert '2 is prohibited to be less than 7' in str(err), f"ValueBelowBoundsError should describe the subject and target. Actual: {str(err)}"
 
 import pytest
 
@@ -113,7 +113,10 @@ def test_validate_is_greater_than_raises(value, target):
 ])
 def test_validate_is_greater_than_no_raise(value, target):
 	# Should not raise when value <= target
-	validate_is_greater_than(value, target)
+	try:
+		validate_is_greater_than(value, target)
+	except Exception as e:
+		assert False, f'Expected no exception for validate_is_greater_than({value}, {target}), but got: {e}'
 
 @pytest.mark.parametrize('value,target', [
 	(2, 7),
@@ -132,4 +135,7 @@ def test_validate_is_less_than_raises(value, target):
 ])
 def test_validate_is_less_than_no_raise(value, target):
 	# Should not raise when value >= target
-	validate_is_less_than(value, target)
+	try:
+		validate_is_less_than(value, target)
+	except Exception as e:
+		assert False, f'Expected no exception for validate_is_less_than({value}, {target}), but got: {e}'
