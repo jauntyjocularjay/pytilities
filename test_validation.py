@@ -5,7 +5,33 @@ Ensures correct error handling, type validation, and numeric sequence checks for
 
 import pytest
 import math
-from .validation import *
+from .validation import (
+	InvalidSequenceError,
+	NotNumericSequenceError,
+	InvalidTypeError,
+	ProhibitedValueError,
+	ValueAboveBoundsError,
+	ValueBelowBoundsError,
+	sequence_are_numbers,
+	validate_as,
+	validate_against,
+	validate_float,
+	validate_is_greater_than,
+	validate_is_less_than,
+)
+
+
+def assert_raises_expected(callable_obj, expected_exception_type, context_message):
+	actual_exception = None
+	try:
+		callable_obj()
+	except Exception as exc:
+		actual_exception = exc
+	assert isinstance(actual_exception, expected_exception_type), (
+		f'{context_message}. Expected exception type: {expected_exception_type.__name__}, '
+		f'Actual: {type(actual_exception).__name__ if actual_exception is not None else "No exception"}'
+	)
+	return actual_exception
 
 def test_invalid_sequence_error_message():
 	err = InvalidSequenceError()
@@ -42,8 +68,11 @@ def test_sequence_are_numbers(data, expected):
 
 @pytest.mark.parametrize("bad_input", [123, 'abc', None])
 def test_sequence_are_numbers_invalid_type(bad_input):
-	with pytest.raises(InvalidSequenceError):
-		sequence_are_numbers(bad_input)
+	assert_raises_expected(
+		lambda: sequence_are_numbers(bad_input),
+		InvalidSequenceError,
+		'sequence_are_numbers should raise for invalid input type',
+	)
 
 @pytest.mark.parametrize("value,typ", [
 	(5, int),
@@ -59,16 +88,22 @@ def test_validate_as_correct_type(value, typ):
 	(3.14, list),
 ])
 def test_validate_as_incorrect_type(value, typ):
-	with pytest.raises(InvalidTypeError):
-		validate_as(value, typ)
+	assert_raises_expected(
+		lambda: validate_as(value, typ),
+		InvalidTypeError,
+		'validate_as should raise for incorrect type',
+	)
 
 @pytest.mark.parametrize("subject,invalids", [
 	(3, (1, 2, 3)),
 	("a", ("a", "b")),
 ])
 def test_validate_against_raises(subject, invalids):
-	with pytest.raises(ProhibitedValueError):
-		validate_against(subject, invalids)
+	assert_raises_expected(
+		lambda: validate_against(subject, invalids),
+		ProhibitedValueError,
+		'validate_against should raise for prohibited subject value',
+	)
 
 def test_validate_against_no_raise():
 	validate_against(4, (1, 2, 3))
@@ -76,8 +111,11 @@ def test_validate_against_no_raise():
 
 @pytest.mark.parametrize("value", [float('nan'), float('inf')])
 def test_validate_float_raises(value):
-	with pytest.raises(ProhibitedValueError):
-		validate_float(value)
+	assert_raises_expected(
+		lambda: validate_float(value),
+		ProhibitedValueError,
+		'validate_float should raise for NaN or infinity',
+	)
 
 @pytest.mark.parametrize("value", [0.0, 1.23, -5.6])
 def test_validate_float_no_raise(value):
@@ -94,47 +132,54 @@ def test_value_below_bounds_error_message():
 	err = ValueBelowBoundsError(2, 7)
 	assert '2 is prohibited to be less than 7' in str(err), f"ValueBelowBoundsError should describe the subject and target. Actual: {str(err)}"
 
-import pytest
+# Updated tests for corrected logic
+@pytest.mark.parametrize('value,target', [
+	(5, 10),
+	(-1, 0),
+	(99, 100),
+])
+def test_validate_is_greater_than_raises(value, target):
+	# Should raise ValueAboveBoundsError when value < target
+	actual_exception = assert_raises_expected(
+		lambda: validate_is_greater_than(value, target),
+		ValueAboveBoundsError,
+		'validate_is_greater_than should raise when value is below target',
+	)
+	assert str(actual_exception) == f'{value} is prohibited to be greater than {target}', f'Expected message: {value} is prohibited to be greater than {target}, Actual: {str(actual_exception)}'
 
 @pytest.mark.parametrize('value,target', [
 	(10, 5),
 	(0, -1),
 	(100, 99),
 ])
-def test_validate_is_greater_than_raises(value, target):
-	# Should raise ValueAboveBoundsError when value > target
-	with pytest.raises(ValueAboveBoundsError, match=f'{value} is prohibited to be greater than {target}'):
-		validate_is_greater_than(value, target)
-
-@pytest.mark.parametrize('value,target', [
-	(5, 10),
-	(-1, 0),
-	(99, 100),
-])
 def test_validate_is_greater_than_no_raise(value, target):
-	# Should not raise when value <= target
+	# Should not raise when value >= target
 	try:
 		validate_is_greater_than(value, target)
 	except Exception as e:
 		assert False, f'Expected no exception for validate_is_greater_than({value}, {target}), but got: {e}'
 
 @pytest.mark.parametrize('value,target', [
-	(2, 7),
-	(-5, 0),
-	(0, 1),
-])
-def test_validate_is_less_than_raises(value, target):
-	# Should raise ValueBelowBoundsError when value < target
-	with pytest.raises(ValueBelowBoundsError, match=f'{value} is prohibited to be less than {target}'):
-		validate_is_less_than(value, target)
-
-@pytest.mark.parametrize('value,target', [
 	(7, 2),
 	(0, -5),
 	(1, 0),
 ])
+def test_validate_is_less_than_raises(value, target):
+	# Should raise ValueBelowBoundsError when value > target
+	actual_exception = assert_raises_expected(
+		lambda: validate_is_less_than(value, target),
+		ValueBelowBoundsError,
+		'validate_is_less_than should raise when value is above target',
+	)
+	assert str(actual_exception) == f'{value} is prohibited to be less than {target}', f'Expected message: {value} is prohibited to be less than {target}, Actual: {str(actual_exception)}'
+
+@pytest.mark.parametrize('value,target', [
+	(2, 7),
+	(-5, 0),
+	(0, 1),
+])
 def test_validate_is_less_than_no_raise(value, target):
-	# Should not raise when value >= target
+	# Should not raise when value <= target
 	try:
 		validate_is_less_than(value, target)
 	except Exception as e:

@@ -7,10 +7,21 @@ the original_sequence_type utility, ensuring correct type preservation and conve
 """
 
 import pytest
-from .returns import *
-from .validation import *
+from .returns import original_sequence_type
 from collections import deque, UserList
 from array import array as Array
+
+
+def assert_raises_expected(callable_obj, expected_exception_type, context_message):
+    actual_exception = None
+    try:
+        callable_obj()
+    except Exception as exc:
+        actual_exception = exc
+    assert isinstance(actual_exception, expected_exception_type), (
+        f'{context_message}. Expected exception type: {expected_exception_type.__name__}, '
+        f'Actual: {type(actual_exception).__name__ if actual_exception is not None else "No exception"}'
+    )
 
 # --- List, Tuple, Set ---
 def test_return_list():
@@ -48,13 +59,17 @@ def test_return_bytearray():
     '''Test: returns bytearray when input_type is bytearray.'''
     result = original_sequence_type(bytearray, [65, 66, 67])
     assert isinstance(result, bytearray), f'Should return bytearray for bytearray input_type. Expected: bytearray, Actual: {type(result).__name__}'
-    assert result == bytearray(b'ABC'), f'Should match bytearray representation for ASCII values. Expected: {bytearray(b'ABC')}, Actual: {result}'
+    expected = bytearray(b'ABC')
+    assert result == expected, f'Should match bytearray representation for ASCII values. Expected: {expected}, Actual: {result}'
 
 # --- Range ---
 def test_return_range():
     '''Test: raises NotImplementedError for any range input_type.'''
-    with pytest.raises(NotImplementedError):
-        original_sequence_type(range, [5])
+    assert_raises_expected(
+        lambda: original_sequence_type(range, [5]),
+        NotImplementedError,
+        'original_sequence_type should raise for range input_type',
+    )
 
 # --- Deque ---
 def test_return_deque():
@@ -80,8 +95,11 @@ def test_return_userlist():
 # --- Error Cases ---
 def test_non_sequence_input():
     '''Test: raises TypeError if data_list is not a Sequence.'''
-    with pytest.raises(TypeError):
-        original_sequence_type(list, 123) # pyright: ignore[reportArgumentType]
+    assert_raises_expected(
+        lambda: original_sequence_type(list, 123), # pyright: ignore[reportArgumentType]
+        TypeError,
+        'original_sequence_type should raise TypeError for non-sequence input',
+    )
 
 def test_fallthrough_branch():
     '''Test: returns data as a list if input_type is not handled.'''

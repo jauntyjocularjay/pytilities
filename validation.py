@@ -94,8 +94,8 @@ def validate_uniqueness(iterable: Iterable, value):
     if value in iterable: raise DuplicateValueError(value)
 
 def validate_is_greater_than(value, target):
-    if value > target: raise ValueAboveBoundsError(value, target)
+    if value < target: raise ValueAboveBoundsError(value, target)
 
 def validate_is_less_than(value, target):
-    if value < target: raise ValueBelowBoundsError(value, target)
+    if value > target: raise ValueBelowBoundsError(value, target)
 
