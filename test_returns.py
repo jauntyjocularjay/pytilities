@@ -103,7 +103,7 @@ def test_range_single_element():
     assert list(result) == [], 'Degenerate range should be empty (start==stop)'
 
 def test_fallthrough_branch():
-    '''Test: returns None if input_type is not handled.'''
+    '''Test: returns data as a list if input_type is not handled.'''
     class Dummy: pass
     result = original_sequence_type(Dummy, [1, 2, 3])
-    assert result is None, 'Should return None for unhandled input_type'
+    assert isinstance(result, list), 'Should return None for unhandled input_type'

@@ -28,8 +28,6 @@ def original_sequence_type(input_type: type, data_list: Sequence):
     
     if input_type is str:
         return str(data_list)
-    elif input_type is list:
-        return list(data_list)
     elif input_type is tuple:
         return tuple(data_list)
     elif input_type is set:
@@ -48,5 +46,6 @@ def original_sequence_type(input_type: type, data_list: Sequence):
         return Array('i', (x for x in data_list))
     elif input_type is UserList:
         return UserList(data_list)
-
+    else:
+        return list(data_list)
 
