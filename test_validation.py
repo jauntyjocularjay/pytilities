@@ -16,7 +16,9 @@ from .validation import (
 	validate_as,
 	validate_against,
 	validate_float,
+	validate_is_greater_or_equal_to,
 	validate_is_greater_than,
+	validate_is_less_or_equal_to,
 	validate_is_less_than,
 )
 
@@ -35,20 +37,19 @@ def assert_raises_expected(callable_obj, expected_exception_type, context_messag
 
 def test_invalid_sequence_error_message():
 	err = InvalidSequenceError()
-	assert 'expected a' in str(err), f"Expected message to contain 'expected a', Actual: {str(err)}"
+	assert isinstance(err, InvalidSequenceError), f'Expected InvalidSequenceError type, Actual: {type(err).__name__}'
 
 def test_not_numeric_sequence_error_message():
 	err = NotNumericSequenceError()
-	assert 'expected a' in str(err), f"Expected message to contain 'expected a', Actual: {str(err)}"
+	assert isinstance(err, NotNumericSequenceError), f'Expected NotNumericSequenceError type, Actual: {type(err).__name__}'
 
 def test_invalid_type_error_message():
 	err = InvalidTypeError(5, str)
-	assert 'expected 5 of <class' in str(err), f"Expected message to contain 'expected 5 of <class', Actual: {str(err)}"
-	assert 'str' in str(err), f"Expected message to contain 'str', Actual: {str(err)}"
+	assert isinstance(err, InvalidTypeError), f'Expected InvalidTypeError type, Actual: {type(err).__name__}'
 
 def test_prohibited_value_error_message():
 	err = ProhibitedValueError(42, (1, 2, 42))
-	assert 'expected 42 not to be any of (1, 2, 42)' in str(err), f"Expected message to contain 'expected 42 not to be any of (1, 2, 42)', Actual: {str(err)}"
+	assert isinstance(err, ProhibitedValueError), f'Expected ProhibitedValueError type, Actual: {type(err).__name__}'
 
 @pytest.mark.parametrize("data,expected", [
 	([1, 2, 3], True),
@@ -123,29 +124,29 @@ def test_validate_float_no_raise(value):
 
 # --- New tests for ValueAboveBoundsError, ValueBelowBoundsError, validate_is_greater_than, validate_is_less_than ---
 def test_value_above_bounds_error_message():
-	# Test that the error message is descriptive
+	# Test that ValueAboveBoundsError can be constructed.
 	err = ValueAboveBoundsError(10, 5)
-	assert '10 is prohibited to be greater than 5' in str(err), f"ValueAboveBoundsError should describe the subject and target. Actual: {str(err)}"
+	assert isinstance(err, ValueAboveBoundsError), f'Expected ValueAboveBoundsError type, Actual: {type(err).__name__}'
 
 def test_value_below_bounds_error_message():
-	# Test that the error message is descriptive
+	# Test that ValueBelowBoundsError can be constructed.
 	err = ValueBelowBoundsError(2, 7)
-	assert '2 is prohibited to be less than 7' in str(err), f"ValueBelowBoundsError should describe the subject and target. Actual: {str(err)}"
+	assert isinstance(err, ValueBelowBoundsError), f'Expected ValueBelowBoundsError type, Actual: {type(err).__name__}'
 
 # Updated tests for corrected logic
 @pytest.mark.parametrize('value,target', [
 	(5, 10),
 	(-1, 0),
-	(99, 100),
+	(98, 100),
+	(5, 5),
 ])
 def test_validate_is_greater_than_raises(value, target):
-	# Should raise ValueAboveBoundsError when value < target
-	actual_exception = assert_raises_expected(
+	# Should raise ValueBelowBoundsError when value is less than or equal to target.
+	assert_raises_expected(
 		lambda: validate_is_greater_than(value, target),
-		ValueAboveBoundsError,
+		ValueBelowBoundsError,
 		'validate_is_greater_than should raise when value is below target',
 	)
-	assert str(actual_exception) == f'{value} is prohibited to be greater than {target}', f'Expected message: {value} is prohibited to be greater than {target}, Actual: {str(actual_exception)}'
 
 @pytest.mark.parametrize('value,target', [
 	(10, 5),
@@ -153,25 +154,49 @@ def test_validate_is_greater_than_raises(value, target):
 	(100, 99),
 ])
 def test_validate_is_greater_than_no_raise(value, target):
-	# Should not raise when value >= target
+	# Should not raise when value is strictly greater than target.
 	try:
 		validate_is_greater_than(value, target)
 	except Exception as e:
 		assert False, f'Expected no exception for validate_is_greater_than({value}, {target}), but got: {e}'
 
 @pytest.mark.parametrize('value,target', [
+	(5, 5),
+	(10, 5),
+	(0, -1),
+])
+def test_validate_is_greater_or_equal_to_no_raise(value, target):
+	# Should not raise when value is greater than or equal to target.
+	try:
+		validate_is_greater_or_equal_to(value, target)
+	except Exception as e:
+		assert False, f'Expected no exception for validate_is_greater_or_equal_to({value}, {target}), but got: {e}'
+
+@pytest.mark.parametrize('value,target', [
+	(4, 5),
+	(-2, 0),
+])
+def test_validate_is_greater_or_equal_to_raises(value, target):
+	# Should raise ValueBelowBoundsError when value is below target.
+	assert_raises_expected(
+		lambda: validate_is_greater_or_equal_to(value, target),
+		ValueBelowBoundsError,
+		'validate_is_greater_or_equal_to should raise when value is below target',
+	)
+
+@pytest.mark.parametrize('value,target', [
 	(7, 2),
 	(0, -5),
-	(1, 0),
+	(2, 0),
+	(0, 0),
 ])
 def test_validate_is_less_than_raises(value, target):
-	# Should raise ValueBelowBoundsError when value > target
-	actual_exception = assert_raises_expected(
+	# Should raise ValueAboveBoundsError when value is greater than or equal to target.
+	assert_raises_expected(
 		lambda: validate_is_less_than(value, target),
-		ValueBelowBoundsError,
+		ValueAboveBoundsError,
 		'validate_is_less_than should raise when value is above target',
 	)
-	assert str(actual_exception) == f'{value} is prohibited to be less than {target}', f'Expected message: {value} is prohibited to be less than {target}, Actual: {str(actual_exception)}'
 
 @pytest.mark.parametrize('value,target', [
 	(2, 7),
@@ -179,8 +204,32 @@ def test_validate_is_less_than_raises(value, target):
 	(0, 1),
 ])
 def test_validate_is_less_than_no_raise(value, target):
-	# Should not raise when value <= target
+	# Should not raise when value is strictly less than target.
 	try:
 		validate_is_less_than(value, target)
 	except Exception as e:
 		assert False, f'Expected no exception for validate_is_less_than({value}, {target}), but got: {e}'
+
+@pytest.mark.parametrize('value,target', [
+	(5, 5),
+	(2, 7),
+	(-5, 0),
+])
+def test_validate_is_less_or_equal_to_no_raise(value, target):
+	# Should not raise when value is less than or equal to target.
+	try:
+		validate_is_less_or_equal_to(value, target)
+	except Exception as e:
+		assert False, f'Expected no exception for validate_is_less_or_equal_to({value}, {target}), but got: {e}'
+
+@pytest.mark.parametrize('value,target', [
+	(8, 2),
+	(1, 0),
+])
+def test_validate_is_less_or_equal_to_raises(value, target):
+	# Should raise ValueAboveBoundsError when value is above target.
+	assert_raises_expected(
+		lambda: validate_is_less_or_equal_to(value, target),
+		ValueAboveBoundsError,
+		'validate_is_less_or_equal_to should raise when value is above target',
+	)

@@ -94,8 +94,29 @@ def validate_uniqueness(iterable: Iterable, value):
     if value in iterable: raise DuplicateValueError(value)
 
 def validate_is_greater_than(value, target):
-    if value < target: raise ValueAboveBoundsError(value, target)
+    if value > target: return
+    else: raise ValueBelowBoundsError(value, target)
+
+# def vig(value, target):
+#     validate_is_greater_than(value, target)
+
+def validate_is_greater_or_equal_to(value, target):
+    if value >= target: return
+    else: raise ValueBelowBoundsError(value, target)
+    
+# def vige(value, target):
+#     validate_is_greater_or_equal_to(value, target)
 
 def validate_is_less_than(value, target):
-    if value > target: raise ValueBelowBoundsError(value, target)
+    if value < target: return 
+    else: raise ValueAboveBoundsError(value, target)
 
+# def vil(value, target):
+#     validate_is_less_than(value, target)
+
+def validate_is_less_or_equal_to(value, target):
+    if value <= target: return 
+    else: raise ValueAboveBoundsError(value, target)
+
+# def vile(value, target):
+#     validate_is_less_or_equal_to(value, target)
