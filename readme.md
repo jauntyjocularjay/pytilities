@@ -50,8 +50,8 @@ console.clear()
 | `InvalidTypeError` | `TypeError` | Raised when an argument is not an instance of the expected type. |
 | `ProhibitedValueError` | `ValueError` | Raised when a value matches a prohibited value. |
 | `DuplicateValueError` | `ValueError` | Raised when a value is already present in an iterable. |
-| `ValueAboveBoundsError` | `ValueError` | Raised when a value is less than a required minimum. |
-| `ValueBelowBoundsError` | `ValueError` | Raised when a value is greater than a required maximum. |
+| `ValueAboveBoundsError` | `ValueError` | Raised when a value is greater than an allowed upper bound. |
+| `ValueBelowBoundsError` | `ValueError` | Raised when a value is less than a required lower bound. |
 
 ### Validators
 
@@ -62,8 +62,15 @@ console.clear()
 | `validate_against(subject, invalid_value_tuple)` | Raises `ProhibitedValueError` if `subject` matches any value in `invalid_value_tuple`. |
 | `validate_float(value)` | Raises `ProhibitedValueError` if `value` is `inf` or `nan`. |
 | `validate_uniqueness(iterable, value)` | Raises `DuplicateValueError` if `value` is already in `iterable`. |
-| `validate_is_greater_than(value, target)` | Raises `ValueAboveBoundsError` if `value < target`. |
-| `validate_is_less_than(value, target)` | Raises `ValueBelowBoundsError` if `value > target`. |
+| `validate_is_greater_than(value, target)` | Strict lower-bound check (`value > target`), else raises `ValueBelowBoundsError`. |
+| `validate_igt(value, target)` | Alias for `validate_is_greater_than`. |
+| `validate_is_greater_or_equal_to(value, target)` | Inclusive lower-bound check (`value >= target`), else raises `ValueBelowBoundsError`. |
+| `validate_ige(value, target)` | Alias for `validate_is_greater_or_equal_to`. |
+| `validate_is_less_than(value, target)` | Strict upper-bound check (`value < target`), else raises `ValueAboveBoundsError`. |
+| `validate_ilt(value, target)` | Alias for `validate_is_less_than`. |
+| `validate_is_less_or_equal_to(value, target)` | Inclusive upper-bound check (`value <= target`), else raises `ValueAboveBoundsError`. |
+| `validate_ile(value, target)` | Alias for `validate_is_less_or_equal_to`. |
+| `validate_safe_exponent(base, exponent, max_float=709.78)` | Raises `ValueAboveBoundsError` when `base > 1` and `base**exponent` would exceed safe float limits. |
 
 ---
 

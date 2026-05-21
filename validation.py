@@ -81,42 +81,185 @@ def sequence_are_numbers(data_list: Sequence):
 
 ### ### VALIDATORS ###
 def validate_as(arg, type):
+    """ Validate that arg is an instance of type.
+
+    Parameters
+    ----------
+    arg : Any
+        The value to validate.
+    type : type | tuple[type, ...]
+        Expected type or tuple of accepted types.
+
+    Raises
+    ------
+    InvalidTypeError
+        If arg is not an instance of type.
+    """
     if not isinstance(arg, type): raise InvalidTypeError(arg, type)
 
 def validate_against(subject, invalid_value_tuple):
+    """ Validate that subject is not one of the prohibited values.
+
+    Parameters
+    ----------
+    subject : Any
+        The value to validate.
+    invalid_value_tuple : tuple
+        Values that are not allowed.
+
+    Raises
+    ------
+    ProhibitedValueError
+        If subject matches any prohibited value.
+    """
     for x in invalid_value_tuple:
         if subject == x: raise ProhibitedValueError(subject, invalid_value_tuple)
 
 def validate_float(value):
+    """ Validate that value is a finite float-like number.
+
+    Parameters
+    ----------
+    value : float
+        Numeric value to validate.
+
+    Raises
+    ------
+    ProhibitedValueError
+        If value is NaN or infinite.
+    """
     if Math.isinf(value) or Math.isnan(value): raise ProhibitedValueError(value, (Math.inf, Math.nan))
 
 def validate_uniqueness(iterable: Iterable, value):
+    """ Validate that value is not already present in iterable.
+
+    Parameters
+    ----------
+    iterable : Iterable
+        Collection to check against.
+    value : Any
+        Value that must be unique within iterable.
+
+    Raises
+    ------
+    DuplicateValueError
+        If value already exists in iterable.
+    """
     if value in iterable: raise DuplicateValueError(value)
 
 def validate_is_greater_than(value, target):
+    """ Validate that value is strictly greater than target.
+
+    Parameters
+    ----------
+    value : Any
+        Value being compared.
+    target : Any
+        Lower strict bound.
+
+    Raises
+    ------
+    ValueBelowBoundsError
+        If value is less than or equal to target.
+    """
     if value > target: return
     else: raise ValueBelowBoundsError(value, target)
 
-# def vig(value, target):
-#     validate_is_greater_than(value, target)
+def validate_igt(value, target):
+    """ Alias for validate_is_greater_than."""
+    validate_is_greater_than(value, target)
 
 def validate_is_greater_or_equal_to(value, target):
+    """ Validate that value is greater than or equal to target.
+
+    Parameters
+    ----------
+    value : Any
+        Value being compared.
+    target : Any
+        Lower inclusive bound.
+
+    Raises
+    ------
+    ValueBelowBoundsError
+        If value is less than target.
+    """
     if value >= target: return
     else: raise ValueBelowBoundsError(value, target)
     
-# def vige(value, target):
-#     validate_is_greater_or_equal_to(value, target)
+def validate_ige(value, target):
+    """ Alias for validate_is_greater_or_equal_to."""
+    validate_is_greater_or_equal_to(value, target)
 
 def validate_is_less_than(value, target):
+    """ Validate that value is strictly less than target.
+
+    Parameters
+    ----------
+    value : Any
+        Value being compared.
+    target : Any
+        Upper strict bound.
+
+    Raises
+    ------
+    ValueAboveBoundsError
+        If value is greater than or equal to target.
+    """
     if value < target: return 
     else: raise ValueAboveBoundsError(value, target)
 
-# def vil(value, target):
-#     validate_is_less_than(value, target)
+def validate_ilt(value, target):
+    """ Alias for validate_is_less_than."""
+    validate_is_less_than(value, target)
 
 def validate_is_less_or_equal_to(value, target):
+    """ Validate that value is less than or equal to target.
+
+    Parameters
+    ----------
+    value : Any
+        Value being compared.
+    target : Any
+        Upper inclusive bound.
+
+    Raises
+    ------
+    ValueAboveBoundsError
+        If value is greater than target.
+    """
     if value <= target: return 
     else: raise ValueAboveBoundsError(value, target)
 
-# def vile(value, target):
-#     validate_is_less_or_equal_to(value, target)
+def validate_ile(value, target):
+    """ Alias for validate_is_less_or_equal_to."""
+    
+    validate_is_less_or_equal_to(value, target)
+
+def validate_safe_exponent(base, exponent, max_float: float = 709.78):
+    """
+    Validates that base**exponent will not overflow the floating-point range.
+
+    For base > 1, raises ValueAboveBoundsError if exponent exceeds the safe bound:
+        exponent > ln(max_float) / ln(base)
+    For base <= 1, always passes (no overflow possible).
+
+    Parameters
+    ----------
+    base : float or int
+        The base of the exponentiation (must be positive).
+    exponent : float or int
+        The exponent value.
+    max_float : float, optional
+        The maximum float value to guard against (default: 709.78 for IEEE 754 double precision).
+
+    Raises
+    ------
+    ValueAboveBoundsError
+        If base > 1 and exponent is too large to safely compute base**exponent as a float.
+    """
+    exponent_bound = Math.log(max_float)/Math.log(base)
+    if base > 1 and exponent > exponent_bound:
+        raise ValueAboveBoundsError(exponent, exponent_bound)
+    else:
+        return
