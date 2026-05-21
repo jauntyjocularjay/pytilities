@@ -16,6 +16,8 @@ All working base code is written by an actual human, [@jauntyjocularjay](https:/
   - [Validators](#validators)
 - [`returns.py`](#returnspy)
   - [`original_sequence_type`](#original_sequence_type)
+- [`pytest_helpers.py`](#pytest_helperspy)
+  - [Shared Test Assertions](#shared-test-assertions)
 - [`card.py`](#cardpy)
   - [`Face`](#face)
   - [`Suit`](#suit)
@@ -44,7 +46,7 @@ console.clear()
 ### Errors
 
 | Class | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `InvalidSequenceError` | `TypeError` | Raised when an argument is not a valid `Sequence`. |
 | `NotNumericSequenceError` | `TypeError` | Raised when a sequence contains non-numeric elements. |
 | `InvalidTypeError` | `TypeError` | Raised when an argument is not an instance of the expected type. |
@@ -56,7 +58,7 @@ console.clear()
 ### Validators
 
 | Function | Description |
-|---|---|
+| --- | --- |
 | `sequence_are_numbers(data_list)` | Returns `True` if all elements are finite `int` or `float`; raises `InvalidSequenceError` if not a sequence. |
 | `validate_as(arg, type)` | Raises `InvalidTypeError` if `arg` is not an instance of `type`. |
 | `validate_against(subject, invalid_value_tuple)` | Raises `ProhibitedValueError` if `subject` matches any value in `invalid_value_tuple`. |
@@ -86,6 +88,24 @@ original_sequence_type(tuple, [1, 2, 3])  # returns (1, 2, 3)
 original_sequence_type(set, [1, 2, 3])    # returns {1, 2, 3}
 original_sequence_type(list, [1, 2, 3])   # returns [1, 2, 3]
 ```
+
+---
+
+## `pytest_helpers.py`
+
+### Shared Test Assertions
+
+Reusable pytest assertion helpers for clearer, DRYer tests across projects.
+
+This section and helper design were created with Github_CoPilot.
+
+| Function | Description |
+| --- | --- |
+| `assert_raises_expected(callable_obj, expected_exception_type, context_message)` | Executes `callable_obj` and asserts that it raises `expected_exception_type`; returns the captured exception for optional message checks. |
+| `assert_no_exception(callable_obj, context_message)` | Executes `callable_obj` and asserts that no exception is raised. |
+| `assert_approx_equal(actual, expected, context_message, abs_tol=1e-9)` | Asserts numeric approximate equality using `pytest.approx` with absolute tolerance. |
+| `assert_mapping_has_keys(mapping_obj, required_keys, context_message)` | Asserts that all `required_keys` exist in a mapping, with missing-key diagnostics. |
+| `assert_starts_with(value, prefix, context_message)` | Asserts that a string starts with the expected prefix, with type and value diagnostics. |
 
 ---
 
