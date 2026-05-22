@@ -1,7 +1,6 @@
 """Shared pytest helper assertions used across test modules."""
 
-import pytest # type: ignore
-
+import math
 
 def assert_raises_expected(callable_obj, expected_exception_type, context_message):
 	actual_exception = None
@@ -29,7 +28,8 @@ def assert_no_exception(callable_obj, context_message):
 
 
 def assert_approx_equal(actual, expected, context_message, abs_tol=1e-9):
-	assert actual == pytest.approx(expected, abs=abs_tol), (
+	is_close = math.isclose(actual, expected, rel_tol=0.0, abs_tol=abs_tol)
+	assert is_close, (
 		f'{context_message}. Expected approximately: {expected}, Actual: {actual}, Tolerance: {abs_tol}'
 	)
 
@@ -48,3 +48,4 @@ def assert_starts_with(value, prefix, context_message):
 	assert value.startswith(prefix), (
 		f'{context_message}. Expected prefix: {prefix}, Actual value: {value}'
 	)
+
