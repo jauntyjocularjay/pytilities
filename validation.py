@@ -1,4 +1,6 @@
 import math as Math
+from typing import Any, Union
+from fractions import Fraction
 from collections.abc import Sequence, Iterable
 
 
@@ -43,16 +45,16 @@ class DuplicateValueError(ValueError):
         super().__init__(f'{value} is already represented')
 
 class ValueAboveBoundsError(ValueError):
-    def __init__(self, subject, target):
+    def __init__(self, subject, target) -> None:
         super().__init__(f'{subject} is prohibited to be greater than {target}')
 
 class ValueBelowBoundsError(ValueError):
-    def __init__(self, subject, target):
+    def __init__(self, subject, target) -> None:
         super().__init__(f'{subject} is prohibited to be less than {target}')
 
 ### VALIDATION RAISES ###
-# @TODO refactor for more consistency instead of returning true, check the individual case. This will break the class on change. Be mindful.
-def sequence_are_numbers(data_list: Sequence):
+# @TODO refactor for more consistency instead of returning true, check the individual case. This will break the boxplot class on change. Be mindful.
+def sequence_are_numbers(data_list: Sequence) -> bool:
     """ Checks that all elements in data_list are numeric (int or float), or that data_list is None.
 
     This function is intended to validate input for statistical analysis functions. If any element
@@ -78,9 +80,8 @@ def sequence_are_numbers(data_list: Sequence):
 
     return True
 
-
 ### ### VALIDATORS ###
-def validate_as(arg, type):
+def validate_as(arg: Any, type: type) -> None:
     """ Validate that arg is an instance of type.
 
     Parameters
@@ -97,7 +98,7 @@ def validate_as(arg, type):
     """
     if not isinstance(arg, type): raise InvalidTypeError(arg, type)
 
-def validate_against(subject, invalid_value_tuple):
+def validate_against(subject: Any, invalid_value_tuple: Any) -> None:
     """ Validate that subject is not one of the prohibited values.
 
     Parameters
@@ -115,7 +116,7 @@ def validate_against(subject, invalid_value_tuple):
     for x in invalid_value_tuple:
         if subject == x: raise ProhibitedValueError(subject, invalid_value_tuple)
 
-def validate_float(value):
+def validate_float(value: float) -> None:
     """ Validate that value is a finite float-like number.
 
     Parameters
@@ -130,7 +131,7 @@ def validate_float(value):
     """
     if Math.isinf(value) or Math.isnan(value): raise ProhibitedValueError(value, (Math.inf, Math.nan))
 
-def validate_uniqueness(iterable: Iterable, value):
+def validate_uniqueness(iterable: Iterable, value: Any) -> None:
     """ Validate that value is not already present in iterable.
 
     Parameters
@@ -147,7 +148,7 @@ def validate_uniqueness(iterable: Iterable, value):
     """
     if value in iterable: raise DuplicateValueError(value)
 
-def validate_is_greater_than(value, target):
+def validate_is_greater_than(value: Union[int, float, Fraction], target: Union[int, float, Fraction]) -> None:
     """ Validate that value is strictly greater than target.
 
     Parameters
@@ -165,11 +166,11 @@ def validate_is_greater_than(value, target):
     if value > target: return
     else: raise ValueBelowBoundsError(value, target)
 
-def validate_igt(value, target):
+def validate_igt(value: Union[int, float, Fraction], target: Union[int, float, Fraction]) -> None:
     """ Alias for validate_is_greater_than."""
     validate_is_greater_than(value, target)
 
-def validate_is_greater_or_equal_to(value, target):
+def validate_is_greater_or_equal_to(value: Union[int, float, Fraction], target: Union[int, float, Fraction]) -> None:
     """ Validate that value is greater than or equal to target.
 
     Parameters
@@ -187,11 +188,11 @@ def validate_is_greater_or_equal_to(value, target):
     if value >= target: return
     else: raise ValueBelowBoundsError(value, target)
     
-def validate_ige(value, target):
+def validate_ige(value: Union[int, float, Fraction], target) -> None:
     """ Alias for validate_is_greater_or_equal_to."""
     validate_is_greater_or_equal_to(value, target)
 
-def validate_is_less_than(value, target):
+def validate_is_less_than(value: Union[int, float, Fraction], target: Union[int, float, Fraction]) -> None:
     """ Validate that value is strictly less than target.
 
     Parameters
@@ -209,11 +210,11 @@ def validate_is_less_than(value, target):
     if value < target: return 
     else: raise ValueAboveBoundsError(value, target)
 
-def validate_ilt(value, target):
+def validate_ilt(value: Union[int, float, Fraction], target: Union[int, float, Fraction]) -> None:
     """ Alias for validate_is_less_than."""
     validate_is_less_than(value, target)
 
-def validate_is_less_or_equal_to(value, target):
+def validate_is_less_or_equal_to(value: Union[int, float, Fraction], target: Union[int, float, Fraction]) -> None:
     """ Validate that value is less than or equal to target.
 
     Parameters
@@ -231,12 +232,12 @@ def validate_is_less_or_equal_to(value, target):
     if value <= target: return 
     else: raise ValueAboveBoundsError(value, target)
 
-def validate_ile(value, target):
+def validate_ile(value: Union[int, float, Fraction], target: Union[int, float, Fraction]) -> None:
     """ Alias for validate_is_less_or_equal_to."""
     
     validate_is_less_or_equal_to(value, target)
 
-def validate_safe_exponent(base, exponent, max_float: float = 709.78):
+def validate_safe_exponent(base: Union[int, float, Fraction], exponent: Union[int, float, Fraction], max_float: float = 709.78) -> None:
     """
     Validates that base**exponent will not overflow the floating-point range.
 

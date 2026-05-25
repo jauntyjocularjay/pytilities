@@ -5,7 +5,7 @@ from .validation import *
 
 
 
-def original_sequence_type(input_type: type, data_list: Sequence = []):
+def original_sequence_type(input_type: type, data_list: Sequence = []) -> Sequence:
     ''' Return a sequence of the same type as input_type, populated with data_list's elements.
 
     Converts the provided data_list into a set, tuple, or list, matching the type of input_type.
@@ -32,8 +32,6 @@ def original_sequence_type(input_type: type, data_list: Sequence = []):
         return str(data_list)
     elif input_type is tuple:
         return tuple(data_list)
-    elif input_type is set:
-        return set(data_list)
     elif input_type is bytes:
         return bytes(data_list)
     elif input_type is bytearray:
