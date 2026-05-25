@@ -18,10 +18,6 @@ All working base code is written by an actual human, [@jauntyjocularjay](https:/
   - [`original_sequence_type`](#original_sequence_type)
 - [`pytest_helpers.py`](#pytest_helperspy)
   - [Shared Test Assertions](#shared-test-assertions)
-- [`card.py`](#cardpy)
-  - [`Face`](#face)
-  - [`Suit`](#suit)
-  - [`card`](#card)
 - [Test Runner](#test-runner)
   - [Bash](#bash)
   - [PowerShell](#powershell)
@@ -106,29 +102,6 @@ This section and helper design were created with Github_CoPilot.
 | `assert_approx_equal(actual, expected, context_message, abs_tol=1e-9)` | Asserts numeric approximate equality using `pytest.approx` with absolute tolerance. |
 | `assert_mapping_has_keys(mapping_obj, required_keys, context_message)` | Asserts that all `required_keys` exist in a mapping, with missing-key diagnostics. |
 | `assert_starts_with(value, prefix, context_message)` | Asserts that a string starts with the expected prefix, with type and value diagnostics. |
-
----
-
-## `card.py`
-
-### `Face`
-
-Enum of named card face values: `ACE`, `KNAVE`, `KNIGHT`, `QUEEN`, `KING`.
-
-### `Suit`
-
-Enum of card suits supporting both tarot and standard playing card decks:
-`CUPS`, `PENTACLES`, `SWORDS`, `WANDS`, `DIAMONDS`, `HEARTS`, `SPADES`, `CLUBS`.
-
-### `card`
-
-Represents a single playing card with an integer `value` and a `Suit`. Face values 1, 11–14 are rendered as their `Face` name in `__str__`; all others render as the integer.
-
-```python
-from pytilities.card import card, Suit
-c = card(13, Suit.HEARTS)
-str(c)  # 'Queen of Hearts'
-```
 
 ---
 
