@@ -16,7 +16,7 @@ All working base code is written by an actual human, [@jauntyjocularjay](https:/
   - [Validators](#validators)
 - [`returns.py`](#returnspy)
   - [`original_sequence_type`](#original_sequence_type)
-- [`pytest_helpers.py`](#pytest_helperspy)
+- [`assert_helpers.py`](#assert_helperspy)
   - [Shared Test Assertions](#shared-test-assertions)
 - [Test Runner](#test-runner)
   - [Bash](#bash)
@@ -87,11 +87,11 @@ original_sequence_type(list, [1, 2, 3])   # returns [1, 2, 3]
 
 ---
 
-## `pytest_helpers.py`
+## `assert_helpers.py`
 
 ### Shared Test Assertions
 
-Reusable pytest assertion helpers for clearer, DRYer tests across projects.
+Reusable python assertion helpers for clearer, DRYer tests across projects.
 
 This section and helper design were created with Github_CoPilot.
 

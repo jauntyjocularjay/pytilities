@@ -5,7 +5,7 @@ Ensures correct error handling, type validation, and numeric sequence checks for
 
 import math
 import pytest
-from .pytest_helpers import assert_no_exception, assert_raises_expected
+from .assert_helpers import assert_no_exception, assert_raises_expected
 from .validation import (
 	InvalidSequenceError,
 	NotNumericSequenceError,

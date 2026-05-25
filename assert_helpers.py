@@ -1,4 +1,4 @@
-"""Shared pytest helper assertions used across test modules."""
+"""Shared assertion helpers used across test modules."""
 
 import math
 
