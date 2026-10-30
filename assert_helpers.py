@@ -1,4 +1,4 @@
-"""Shared assertion helpers used across test modules."""
+"""Shared assertion helper assertions used across test modules."""
 
 import math
 

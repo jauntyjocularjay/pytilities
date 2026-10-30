@@ -42,6 +42,8 @@ def original_sequence_type(input_type: type, data_list: Sequence = []) -> Sequen
         return Array('i', (x for x in data_list))
     elif input_type is UserList:
         return UserList(data_list)
+    elif input_type is set:
+        return set(data_list)
     elif input_type is range:
         raise NotImplementedError(f'range is not supported as range needs to be handled explicitly.')
     else:
