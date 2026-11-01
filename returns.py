@@ -1,7 +1,6 @@
 from collections import deque, UserList
 from collections.abc import Sequence
 from array import array as Array
-from .validation import *
 
 
 

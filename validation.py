@@ -272,3 +272,30 @@ def validate_safe_exponent(base: Union[int, float, Fraction], exponent: Union[in
         raise ValueAboveBoundsError(exponent, exponent_bound)
     else:
         return
+
+"""
+imports as a tuple
+from .pytilities.validation import (
+    InvalidSequenceError,
+    InvalidTypeError,
+    ProhibitedValueError,
+    DuplicateValueError,
+    ValueAboveBoundsError,
+    ValueBelowBoundsError,
+    NotNumericSequenceError,
+    ProhibitedValueError,
+    sequence_are_numbers,
+    validate_as,
+    validate_against,
+    validate_float,
+    validate_uniqueness,
+    validate_is_greater_than,
+    validate_igt,
+    validate_is_greater_or_equal_to,
+    validate_ige,
+    validate_is_less_than,
+    validate_is_less_or_equal_to,
+    validate_ile,
+    validate_safe_exponent
+)
+"""
