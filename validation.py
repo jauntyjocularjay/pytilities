@@ -243,7 +243,8 @@ def validate_safe_exponent(base: Union[int, float, Fraction], exponent: Union[in
 
     For base > 1, raises ValueAboveBoundsError if exponent exceeds the safe bound:
         exponent > ln(max_float) / ln(base)
-    For base <= 1, always passes (no overflow possible).
+    For base == 0, raises ValueBelowBoundsError when exponent < 0 (undefined operation).
+    For 0 <= base <= 1 with exponent >= 0, always passes (no overflow possible).
 
     Parameters
     ----------
@@ -258,7 +259,14 @@ def validate_safe_exponent(base: Union[int, float, Fraction], exponent: Union[in
     ------
     ValueAboveBoundsError
         If base > 1 and exponent is too large to safely compute base**exponent as a float.
+    ValueBelowBoundsError
+        If base == 0 and exponent < 0.
     """
+    if base == 1: return
+    if base == 0:
+        if exponent < 0: raise ValueBelowBoundsError(exponent, 0)
+        return
+
     exponent_bound = Math.log(max_float)/Math.log(base)
     if base > 1 and exponent > exponent_bound:
         raise ValueAboveBoundsError(exponent, exponent_bound)
