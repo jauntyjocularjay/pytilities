@@ -254,7 +254,6 @@ def test_alias_validators_accept_valid_bounds(validator, value, target):
     )
 
 
-# LLM-Generated: Exponent safety tests assert the documented contract instead of a raw crash.
 @pytest.mark.parametrize(
     "base, exponent",
     [
